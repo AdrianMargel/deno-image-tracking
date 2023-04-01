@@ -28,8 +28,10 @@ const handler=(request)=>{
 
 		tracks.insertOne({
 			_id: new ObjectId(),
-			ua:ua,
-			url:url,
+			ua: ua,
+			url: url,
+			key: url.split("/").pop().split(".")[0],
+			time: new Date().getTime()
 		});
 		return new Response(img, {
 			headers: head,
