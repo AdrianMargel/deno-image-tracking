@@ -1,27 +1,17 @@
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import {
-	Bson,
-	MongoClient,
-} from "https://deno.land/x/mongo@LATEST_VERSION/mod.ts";
+  MongoClient,
+  ObjectId,
+} from "https://deno.land/x/atlas_sdk@v1.1.0/mod.ts";
 
-const client=new MongoClient();
-// Connect to Mongo Atlas Database
-await client.connect({
-	db: "image-tracking",
-	tls: true,
-	servers: [
-		{
-			host: "main-cluster.tyflron.mongodb.net",
-			port: 27017,
-		},
-	],
-	credential: {
-		username: "adrian",
-		password: Deno.env.get("MONGO_PASSWORD"),//yeah, not a chance I was going to put that here directly
-		db: "image-tracking",
-		mechanism: "SCRAM-SHA-1",
+const client = new MongoClient({
+	endpoint: "https://us-west-2.aws.data.mongodb-api.com/app/data-bduil/endpoint/data/v1",
+	dataSource: "Main-Cluster",
+	auth: {
+		apiKey: Deno.env.get("MONGO_API_KEY"),
 	},
 });
+
 const db=client.database("image-tracking");
 const tracks=db.collection("tracks");
 
@@ -30,19 +20,24 @@ const logoImg=await Deno.readFile('./logo.png');
 const handler=(request)=>{
 	const ua=request.headers.get("user-agent")??"Unknown";
 	const url=request.url;
+	if(url.includes(".png")){
+		const head=new Headers();
+		head.set('content-type','image/png');
 
-	const head=new Headers();
-	head.set('content-type','image/png');
+		const img=logoImg;
 
-	const img=logoImg;
-	const insertId=await tracks.insertOne({
-		ua,
-		url,
-	});
-
-	return new Response(img, {
-		headers: head,
-		status: 200
+		tracks.insertOne({
+			_id: new ObjectId(),
+			ua:ua,
+			url:url,
+		});
+		return new Response(img, {
+			headers: head,
+			status: 200
+		});
+	}
+	return new Response(null, {
+		status: 404
 	});
 };
 
