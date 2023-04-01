@@ -1,26 +1,26 @@
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import {
-  Bson,
-  MongoClient,
+	Bson,
+	MongoClient,
 } from "https://deno.land/x/mongo@LATEST_VERSION/mod.ts";
 
-const dbClient=new MongoClient();
+const client=new MongoClient();
 // Connect to Mongo Atlas Database
 await client.connect({
-  db: "image-tracking",
-  tls: true,
-  servers: [
-    {
-      host: "main-cluster.tyflron.mongodb.net",
-      port: 27017,
-    },
-  ],
-  credential: {
-    username: "adrian",
-    password: Deno.env.get("MONGO_PASSWORD"),//yeah, not a chance I was going to put that here directly
-    db: "image-tracking",
-    mechanism: "SCRAM-SHA-1",
-  },
+	db: "image-tracking",
+	tls: true,
+	servers: [
+		{
+			host: "main-cluster.tyflron.mongodb.net",
+			port: 27017,
+		},
+	],
+	credential: {
+		username: "adrian",
+		password: Deno.env.get("MONGO_PASSWORD"),//yeah, not a chance I was going to put that here directly
+		db: "image-tracking",
+		mechanism: "SCRAM-SHA-1",
+	},
 });
 const db=client.database("image-tracking");
 const tracks=db.collection("tracks");
