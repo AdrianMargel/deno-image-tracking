@@ -15,14 +15,15 @@ const client = new MongoClient({
 const db=client.database("image-tracking");
 const tracks=db.collection("tracks");
 
-const logoImg=await Deno.readFile('./logo.png');
+const logoImg=await Deno.readFile("./logo.png");
 
 const handler=(request)=>{
 	const ua=request.headers.get("user-agent")??"Unknown";
+	const ip=request.headers.get("host")??"Unknown";
 	const url=request.url;
 	if(url.includes(".png")){
 		const head=new Headers();
-		head.set('content-type','image/png');
+		head.set("content-type","image/png");
 
 		const img=logoImg;
 
