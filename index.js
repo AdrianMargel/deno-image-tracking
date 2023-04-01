@@ -30,6 +30,7 @@ const handler=(request)=>{
 		tracks.insertOne({
 			_id: new ObjectId(),
 			ua: ua,
+			ip: ip,
 			url: url,
 			key: url.split("/").pop().split(".")[0],
 			time: new Date().getTime()
