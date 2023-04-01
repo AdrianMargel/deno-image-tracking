@@ -17,9 +17,9 @@ const tracks=db.collection("tracks");
 
 const logoImg=await Deno.readFile("./logo.png");
 
-const handler=(request)=>{
+const handler=(request,connInfo)=>{
 	const ua=request.headers.get("user-agent")??"Unknown";
-	const ip=request.headers.get("host")??"Unknown";
+	const ip=connInfo?.remoteAddr??"Unknown";
 	const url=request.url;
 	if(url.includes(".png")){
 		const head=new Headers();
